@@ -36,20 +36,24 @@ class PointsAndDistances {
 
 public class Dijkstra {
 
-
-private void addElementToFoundArray(ArrayList<PointsDistancesAndCreator> arr){
-    Integer totalDistance=0;
-    for (PointsDistancesAndCreator arrElement:arr) {
-
-    }
-    Dijkstra.foundPathes.add(new PointsAndDistances(punkt.pctFrom,punkt.pctFrom,punkt.distance))
-}
-
-
     static ArrayList<PointsAndDistances> pathArray = new ArrayList<PointsAndDistances>();
     static ArrayList<PointsAndDistances> foundPathes = new ArrayList<PointsAndDistances>();
 
     static String arriveAtDestination="D";
+
+
+    // if a route is found, this method adds it to the foundPathes Array.
+    public static void addElementToFoundArray(ArrayList<PointsDistancesAndCreator> arr){
+    Integer totalDistance=0;
+    String routeDescription="";
+    for (PointsDistancesAndCreator arrElement:arr) {
+            totalDistance+=arrElement.distance;
+            routeDescription+=arrElement.pctFrom+arrElement.pctTo+arrElement.distance;
+    }
+    Dijkstra.foundPathes.add(new PointsDistancesAndRoute(arr.get(0).pctFrom,arr.get(arr.size()-1).pctTo,totalDistance,routeDescription));
+}
+
+
 
     // method for initialising pathArray variable
     private static void initPathArray(){
@@ -97,22 +101,32 @@ private void addElementToFoundArray(ArrayList<PointsDistancesAndCreator> arr){
     public static void main(String[] args) {
         initPathArray();
         displayPathArray();
-        System.out.println("We are searching for the shortest route to the element "+ arriveAtDestination);
-        ArrayList<PointsAndDistances> arr = new ArrayList<PointsAndDistances>();
-        arr.add( new PointsAndDistances("-","A",0) ) ; // wir starten mit punkt "A"
-        dijkstra(arr);
+        System.out.println("We are searching for the shortest route to the element \""+ arriveAtDestination+"\"\r\n");
+        ArrayList<PointsDistancesAndCreator> arr = new ArrayList<PointsDistancesAndCreator>();
+        arr.add( new PointsDistancesAndCreator("*","A",0,"*") ) ; // wir starten mit punkt "A"
+        dijkstra(arr,1);
+        displayFoundArray(foundPathes);
 
 
     } // ------------- end MAIN  ----------------------------------------------------------------
 
     // display the array with the found path
-    private static void displayArray(ArrayList<PointsAndDistances> arr){
-        for (PointsAndDistances element: arr) {
-            System.out.println(element.pctFrom + "-"+element.pctTo+",d:"+element.distance);
+    private static void displayArray(ArrayList<PointsDistancesAndCreator> arr, int recLevel){
+        System.out.println("►".repeat(recLevel)+"START| END |DIST |PARENT");
+        for (PointsDistancesAndCreator element: arr) {
+            System.out.println("►".repeat(recLevel)+"  "+element.pctFrom + "  |  "+element.pctTo+"  |  "+element.distance+"  |  "+element.erzeuger);
         }
-        System.out.println("------");
+        System.out.println("►".repeat(recLevel)+"̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅");
     }
 
+    // display the foundarray with the found path
+    private static void displayFoundArray(ArrayList<PointsAndDistances> arr){
+        System.out.println("FOUND ARRAY :\r\nSTART| END |DIST ");
+        for (PointsAndDistances element: arr) {
+            System.out.println("  "+element.pctFrom + "  |  "+element.pctTo+"  |  "+element.distance+"  |  ");
+        }
+        System.out.println("̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅");
+    }
 
     // calculate distance between 2 points
     private static Integer getDistance(String pct_a, String pct_b){
@@ -122,78 +136,58 @@ private void addElementToFoundArray(ArrayList<PointsDistancesAndCreator> arr){
                     (pct_b.equals(arrElement.pctFrom) && pct_a.equals(arrElement.pctTo)))
                 toReturn= arrElement.distance;
         }
-        System.out.println("Distance calculated:"+pct_a+"-"+pct_b+"="+toReturn);
         return toReturn;
     }
 
-    // ------- The dijkstra thing --------------------------
-    private static void dijkstra(ArrayList<PointsAndDistances> arr){
+    // ------- The dijkstra thing -------------------------------------------
+    private static void dijkstra(ArrayList<PointsDistancesAndCreator> arr,int recLevel){
+    // ----------------------------------------------------------------------
 
         // first, we check if we arrived at destination
         // the last point of arrival ist the last element in the arr array
         String lastValidPoint =  arr.get(arr.size()-1).pctTo;
+
+        // log
+        System.out.println("►".repeat(recLevel)+"START dijikstra Parent="+lastValidPoint+" current array:");
+        displayArray(arr,recLevel);
         if (lastValidPoint.equals(arriveAtDestination)){
             // write the path to foundPathes array
+                addElementToFoundArray(arr);
+            System.out.println("\n\r"+"►".repeat(recLevel)+"!!! ROUTE FOUND !!!  Added to foundArray\r\n");
+                return;
         }
 
-
-
-
-        displayArray(arr);
-
-
-
-        // get the last point from the array
-        String lastValidPoint =  arr.get(arr.size()-1).pctTo;
-        System.out.println("*last valid point in dijkstra:"+lastValidPoint);
-
-        // get all possible points starting from "lastPoint"
+        // get all possible points starting from "lastPoint" using the pathArray class member
         for (PointsAndDistances arrElement:pathArray ) {
             if (arrElement.pctFrom.equals(lastValidPoint)){
                 String nextPossiblePoint = arrElement.pctTo;
                 // now we have the next  possible element, we must check if the route is already used.
-                System.out.print("Next possible value is:"+nextPossiblePoint);
+                System.out.print("►".repeat(recLevel)+"Next possible point (=pathArray) is:"+nextPossiblePoint+", checking if available ... ");
 
                 boolean nextPointPossible = true;
                 for (   PointsAndDistances elementOfArray : arr) {
-                    if      ((elementOfArray.pctFrom.equals(lastValidPoint) && elementOfArray.pctTo.equals(nextPossiblePoint)) ||
+                    if ((elementOfArray.pctFrom.equals(lastValidPoint) && elementOfArray.pctTo.equals(nextPossiblePoint)) ||
                             (elementOfArray.pctFrom.equals(nextPossiblePoint) && elementOfArray.pctTo.equals(lastValidPoint))) {
                         // if true, the combination lastValidPoint -> nextPoint ist not possible , while already used.
 //                        System.out.println("* route not posible:"+elementOfArray.pctFrom + "-" + elementOfArray.pctTo+" already used");
                         nextPointPossible = false;
+                        break; // IntelliJ told me so ...
                     }
                 }
 
-                System.out.println((!nextPointPossible)?" - not suitable":" - point usable");
+                System.out.println((!nextPointPossible)?" - route already used.":" - OK. route was never used. Ready to be used to call dijkstra.");
                 // we know now, if nextPointPossible is true, the new point is OK.
                 // calculate the distance and the new element to the array
 
                 if (nextPointPossible) {
+                        arr.add(new PointsDistancesAndCreator(lastValidPoint, nextPossiblePoint, getDistance(lastValidPoint, nextPossiblePoint),lastValidPoint));
 
-
-                    // check if we have already arrived or not :
-                    if (nextPossiblePoint.equals(arriveAtDestination)) {
-
-
-                        System.out.println("\r\n---------------------\r\nArrived to destination. Route is:");
-                        displayArray(arr);
-                        System.out.println("+" + lastValidPoint + "->" + nextPossiblePoint);
-
-                    }else{
-
-                        System.out.println("Added to current arr:" + lastValidPoint + "->" + nextPossiblePoint);
-                        arr.add(new PointsAndDistances(lastValidPoint, nextPossiblePoint, getDistance(lastValidPoint, nextPossiblePoint)));
-
-                    }
-
-                    // call dijkstra again, other routes are maybe possible
-                    dijkstra(arr);
-
+                    // call dijkstra
+                    System.out.println("►".repeat(recLevel)+"Calling dijkstra with the array:");
+                    dijkstra(arr,++recLevel);
                 }
-
             }
         }
-
     } // end  methode dijkstra
 
 }// end class Dijkstra
