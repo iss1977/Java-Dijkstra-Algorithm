@@ -36,6 +36,8 @@ class PointsAndDistances {
 
 public class Dijkstra {
 
+    static final String depthsign="░░▒▒▓▒▒░░  ";
+    
     static ArrayList<PointsAndDistances> pathArray = new ArrayList<PointsAndDistances>();
     static ArrayList<PointsAndDistances> foundPathes = new ArrayList<PointsAndDistances>();
 
@@ -112,11 +114,12 @@ public class Dijkstra {
 
     // display the array with the found path
     private static void displayArray(ArrayList<PointsDistancesAndCreator> arr, int recLevel){
-        System.out.println("►".repeat(recLevel)+"START| END |DIST |PARENT");
+        System.out.println(depthsign.repeat(recLevel)+"─".repeat(25));
+        System.out.println(depthsign.repeat(recLevel)+"START| END |DIST |PARENT");
         for (PointsDistancesAndCreator element: arr) {
-            System.out.println("►".repeat(recLevel)+"  "+element.pctFrom + "  |  "+element.pctTo+"  |  "+element.distance+"  |  "+element.erzeuger);
+            System.out.println(depthsign.repeat(recLevel)+"  "+element.pctFrom + "  |  "+element.pctTo+"  |  "+element.distance+"  |  "+element.erzeuger);
         }
-        System.out.println("►".repeat(recLevel)+"̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅");
+        System.out.println(depthsign.repeat(recLevel)+"̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅");
     }
 
     // display the foundarray with the found path
@@ -148,12 +151,12 @@ public class Dijkstra {
         String lastValidPoint =  arr.get(arr.size()-1).pctTo;
 
         // log
-        System.out.println("►".repeat(recLevel)+"START dijikstra Parent="+lastValidPoint+" current array:");
+        System.out.println(depthsign.repeat(recLevel)+"START dijikstra Parent="+lastValidPoint+" current array:");
         displayArray(arr,recLevel);
         if (lastValidPoint.equals(arriveAtDestination)){
             // write the path to foundPathes array
                 addElementToFoundArray(arr);
-            System.out.println("\n\r"+"►".repeat(recLevel)+"!!! ROUTE FOUND !!!  Added to foundArray\r\n");
+            System.out.println("\n\r"+depthsign.repeat(recLevel)+"!!! ROUTE FOUND !!!  Added to foundArray\r\n");
                 return;
         }
 
@@ -162,7 +165,7 @@ public class Dijkstra {
             if (arrElement.pctFrom.equals(lastValidPoint)){
                 String nextPossiblePoint = arrElement.pctTo;
                 // now we have the next  possible element, we must check if the route is already used.
-                System.out.print("►".repeat(recLevel)+"Next possible point (=pathArray) is:"+nextPossiblePoint+", checking if available ... ");
+                System.out.print(depthsign.repeat(recLevel)+"Next possible point (=pathArray) is:"+nextPossiblePoint+", checking if available ... ");
 
                 boolean nextPointPossible = true;
                 for (   PointsAndDistances elementOfArray : arr) {
@@ -183,8 +186,8 @@ public class Dijkstra {
                         arr.add(new PointsDistancesAndCreator(lastValidPoint, nextPossiblePoint, getDistance(lastValidPoint, nextPossiblePoint),lastValidPoint));
 
                     // call dijkstra
-                    System.out.println("►".repeat(recLevel)+"Calling dijkstra with the array:");
-                    dijkstra(arr,++recLevel);
+                    System.out.println(depthsign.repeat(recLevel)+"Calling dijkstra ->");
+                    dijkstra(new ArrayList<PointsDistancesAndCreator>(arr),++recLevel);
                 }
             }
         }
