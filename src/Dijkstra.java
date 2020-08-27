@@ -1,7 +1,27 @@
 import java.util.ArrayList;
 
+// this class is used to store a found route with the found route.
+class PointsDistancesAndRoute extends PointsAndDistances {
+    String route;
+
+    PointsDistancesAndRoute (String pctFrom, String pctTo, Integer distance, String route) {
+        super(pctFrom, pctTo, distance);
+        this.route = route;
+    }
+}
+
+// this class is used to represint an element in the temporaray array used in dijkstra class.
+class PointsDistancesAndCreator extends PointsAndDistances{
+    String erzeuger; // speichert einen "PointsAndDistances" datensatz samt erzeuger
+    PointsDistancesAndCreator(String pctFrom, String pctTo, Integer distance, String creator) {
+        super(pctFrom, pctTo, distance);
+        erzeuger=creator;
+    }
+}
+
+
 // this classis a blueprint for  an element in the array pathArray
-class PointsAndDistances{
+class PointsAndDistances {
     String pctFrom;
     String pctTo;
     Integer distance;
@@ -12,33 +32,50 @@ class PointsAndDistances{
         this.pctTo=pctTo;
         this.distance = distance;
     }
-
 }
 
 public class Dijkstra {
 
+
+private void addElementToFoundArray(ArrayList<PointsDistancesAndCreator> arr){
+    Integer totalDistance=0;
+    for (PointsDistancesAndCreator arrElement:arr) {
+
+    }
+    Dijkstra.foundPathes.add(new PointsAndDistances(punkt.pctFrom,punkt.pctFrom,punkt.distance))
+}
+
+
     static ArrayList<PointsAndDistances> pathArray = new ArrayList<PointsAndDistances>();
+    static ArrayList<PointsAndDistances> foundPathes = new ArrayList<PointsAndDistances>();
 
     static String arriveAtDestination="D";
 
     // method for initialising pathArray variable
     private static void initPathArray(){
-        pathArray.add(new PointsAndDistances("A","B",4));
-        pathArray.add(new PointsAndDistances("A","C",3));
-        pathArray.add(new PointsAndDistances("A","D",3));
-        pathArray.add(new PointsAndDistances("B","A",4));
-        pathArray.add(new PointsAndDistances("B","E",2));
-        pathArray.add(new PointsAndDistances("C","A",3));
-        pathArray.add(new PointsAndDistances("C","F",4));
-        pathArray.add(new PointsAndDistances("D","A",3));
+        pathArray.add(new PointsAndDistances("A","B",5));
+        pathArray.add(new PointsAndDistances("A","C",7));
+        pathArray.add(new PointsAndDistances("B","C",1));
+        pathArray.add(new PointsAndDistances("C","D",3));
         pathArray.add(new PointsAndDistances("D","E",1));
-        pathArray.add(new PointsAndDistances("D","F",1));
-        pathArray.add(new PointsAndDistances("E","B",2));
-        pathArray.add(new PointsAndDistances("E","D",1));
-        pathArray.add(new PointsAndDistances("E","F",2));
-        pathArray.add(new PointsAndDistances("F","C",4));
-        pathArray.add(new PointsAndDistances("F","E",2));
-        pathArray.add(new PointsAndDistances("F","D",1));
+
+
+//        pathArray.add(new PointsAndDistances("A","B",4));
+//        pathArray.add(new PointsAndDistances("A","C",3));
+//        pathArray.add(new PointsAndDistances("A","D",3));
+//        pathArray.add(new PointsAndDistances("B","A",4));
+//        pathArray.add(new PointsAndDistances("B","E",2));
+//        pathArray.add(new PointsAndDistances("C","A",3));
+//        pathArray.add(new PointsAndDistances("C","F",4));
+//        pathArray.add(new PointsAndDistances("D","A",3));
+//        pathArray.add(new PointsAndDistances("D","E",1));
+//        pathArray.add(new PointsAndDistances("D","F",1));
+//        pathArray.add(new PointsAndDistances("E","B",2));
+//        pathArray.add(new PointsAndDistances("E","D",1));
+//        pathArray.add(new PointsAndDistances("E","F",2));
+//        pathArray.add(new PointsAndDistances("F","C",4));
+//        pathArray.add(new PointsAndDistances("F","E",2));
+//        pathArray.add(new PointsAndDistances("F","D",1));
     }
 
     // display the array with points and distances
@@ -92,6 +129,16 @@ public class Dijkstra {
     // ------- The dijkstra thing --------------------------
     private static void dijkstra(ArrayList<PointsAndDistances> arr){
 
+        // first, we check if we arrived at destination
+        // the last point of arrival ist the last element in the arr array
+        String lastValidPoint =  arr.get(arr.size()-1).pctTo;
+        if (lastValidPoint.equals(arriveAtDestination)){
+            // write the path to foundPathes array
+        }
+
+
+
+
         displayArray(arr);
 
 
@@ -105,7 +152,7 @@ public class Dijkstra {
             if (arrElement.pctFrom.equals(lastValidPoint)){
                 String nextPossiblePoint = arrElement.pctTo;
                 // now we have the next  possible element, we must check if the route is already used.
-                System.out.print("Next posible value is:"+nextPossiblePoint);
+                System.out.print("Next possible value is:"+nextPossiblePoint);
 
                 boolean nextPointPossible = true;
                 for (   PointsAndDistances elementOfArray : arr) {
@@ -148,6 +195,5 @@ public class Dijkstra {
         }
 
     } // end  methode dijkstra
-
 
 }// end class Dijkstra
