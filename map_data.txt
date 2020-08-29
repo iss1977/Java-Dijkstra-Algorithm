@@ -1,0 +1,5 @@
+Innsbruck- Salzburg: 184km
+Salzburg - Linz : 132km;
+Linz-Wien : 184km;
+Wien-Graz:200km;
+Salzburg -Graz : 240km;
